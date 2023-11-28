@@ -35,7 +35,7 @@ function SignUp() {
 
 
     useEffect(() => {
-        setipAddress("1111.1111.1111.1111")
+        //setipAddress("1111.1111.1111.1111")
     }, []);
 
     const postData = () => {
@@ -59,7 +59,7 @@ function SignUp() {
                 password:password,
                 phone:phone,
                 address:address,
-                ip:ipAddress
+                //ip:ipAddress
 
             })
 
@@ -77,7 +77,7 @@ function SignUp() {
     }
 
     const data = () => {
-        console.log(ipAddress);
+        //console.log(ipAddress);
     }
 
 
