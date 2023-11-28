@@ -5,10 +5,23 @@ const USER = mongoose.model("USER");
 const ADMIN = mongoose.model("ADMIN");
 const AGENT = mongoose.model("AGENT");
 // const FEEDBACK = mongoose.model("FEEDBACK");
+// const bcrypt = require('bcrypt');
 const bcryptjs = require('bcryptjs');
 const jwt = require("jsonwebtoken")
 const {Jwt_secret} = require("../keys");
 const requireLogin = require("../middlewares/requireLogin");
+
+
+
+var http = require('http');
+const ipa = '';
+
+http.get({'host': 'api.ipify.org', 'port': 80, 'path': '/'}, function(resp) {
+  resp.on('data', function(ip) {
+    console.log("My public IP address is: " + ip);
+  });
+});
+
 
 
 
@@ -17,7 +30,13 @@ const requireLogin = require("../middlewares/requireLogin");
 
 router.post("/signup1" , (req,res)=>{
     // res.json("data posted successfully")
-    const {name , userName , email,password , address , phone , ip} = req.body;
+    const {name , userName , email,password , address , phone} = req.body;
+
+    const ip = req.headers['cf-connecting-ip'] ||
+                req.headers['x-real-ip'] ||
+                req.headers['x-forwarded-for'] ||
+                req.socket.remoteAddress || '' ;
+
 
     if(!name || !email || !userName ||!password ||!address ||!phone ){
         return res.status(422).json({error : "Please add all the fileds"})
@@ -130,7 +149,7 @@ router.post("/adminSignin" , (req , res) => {
 
     ADMIN.findOne({userName:userName}).then((savedUser) => {
         if(!savedUser){
-            return res.status(422).json({error:"Invalid Email"})
+            return res.status(422).json({error:"Invalid UserName"})
         }
         bcryptjs.compare(password , savedUser.password).then((match) => {
             if(match){
